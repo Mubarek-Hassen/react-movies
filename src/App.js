@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import MoviesList from './components/MoviesList';
 import './App.css';
+import AddMovie from './components/AddMovie';
 
 function App() {
   
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
-
-  const fetchMoviesHandler = async ()=>{
+  
+  const fetchMoviesHandler = useCallback( async ()=>{
     setIsLoading(true)
     setError(null)
     try {
@@ -32,6 +33,13 @@ function App() {
       setError(error.message)
     }
     setIsLoading(false)
+  }, [])
+  
+  useEffect(()=>{
+    fetchMoviesHandler()
+  }, [fetchMoviesHandler]);
+  function addMovieHandler(movie){
+    console.log(movie);
   }
 
   // Another way to refactor the conditionals in the JSX
@@ -51,14 +59,13 @@ function App() {
   return (
     <React.Fragment>
       <section>
-        <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+        <AddMovie onAddMovie={addMovieHandler} />
       </section>
       <section>
         {/* {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
         {!isLoading && movies.length === 0 && !error && <p>Found No Movies.</p>}
         {isLoading && <p>Loading...</p> }
         {!isLoading && error && <p>{error}</p>} */}
-        
         {content}
       </section>
     </React.Fragment>
